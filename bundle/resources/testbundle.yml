@@ -2,6 +2,8 @@ resources:
   jobs:
     my_bundle_job:  #logical job name
       name: my bundle job name #text that shows up
+      run_as: 
+        service_principal_name: Mike_sp
       email_notifications:
         on_start:
           - ${var.email_address}
