@@ -2,8 +2,8 @@ resources:
   jobs:
     my_bundle_job:  #logical job name
       name: my bundle job name #text that shows up
-      run_as: 
-        service_principal_name: Mike_sp
+      #run_as: 
+      #  service_principal_name: Mike_sp
       email_notifications:
         on_start:
           - ${var.email_address}
@@ -22,7 +22,7 @@ resources:
       tasks:
         - task_key: ExistingClusterTask
           notebook_task:
-            notebook_path: ./bundle/notebooks/notebook1
+            notebook_path: ../notebooks/notebook1.ipynb #this is relative to where the .yml file is
             source: WORKSPACE
           #Any task with no depends_on part, can execute in parallel
           existing_cluster_id: ${var.cluster_id}
@@ -36,7 +36,7 @@ resources:
             #all tasks that depend on ExistingClusterTask can run in parallel
             - task_key: ExistingClusterTask
           notebook_task:
-            notebook_path: ./bundle/notebooks/notebook1
+            notebook_path: ../notebooks/notebook1.ipynb
             source: WORKSPACE
           #no compute is specified!
           max_retries: 1
@@ -48,7 +48,7 @@ resources:
           depends_on:
             - task_key: ExistingClusterTask
           notebook_task:
-            notebook_path: ./bundle/notebooks/notebook1
+            notebook_path: ../notebooks/notebook1.ipynb
             source: WORKSPACE
           max_retries: 1
           min_retry_interval_millis: 120000
@@ -61,12 +61,12 @@ resources:
           #   node_type_id: 'i3.xlarge'            
 
       #put this here for one cluster for all tasks
-      job_clusters:
-          - job_cluster_key: default_cluster
-            new_cluster:
-              spark_version: 13.3.x-scala2.12
-              node_type_id: i3.xlarge
-              num_workers: 1
+      #job_clusters:
+      #    - job_cluster_key: default_cluster
+      #      new_cluster:
+      #        spark_version: 13.3.x-scala2.12
+      #        node_type_id: i3.xlarge
+      #        num_workers: 1
 
 
       queue:
