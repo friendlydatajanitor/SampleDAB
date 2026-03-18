@@ -1,0 +1,80 @@
+resources:
+  jobs:
+    my_bundle_job:  #logical job name
+      name: my bundle job name #text that shows up
+      email_notifications:
+        on_start:
+          - ${var.email_address}
+        on_success:
+          - ${var.email_address}
+        on_failure:
+          - ${var.email_address}
+      notification_settings:
+        no_alert_for_skipped_runs: true
+        no_alert_for_canceled_runs: true
+      # trigger:
+      #   pause_status: UNPAUSED
+      #   file_arrival:
+      #     url: abfss://raw@${var.storage_account}.dfs.core.windows.net/<some directory>
+      #     wait_after_last_change_seconds: 61
+      tasks:
+        - task_key: ExistingClusterTask
+          notebook_task:
+            notebook_path: ./bundle/notebooks/notebook1
+            source: WORKSPACE
+          #Any task with no depends_on part, can execute in parallel
+          existing_cluster_id: ${var.cluster_id}
+          max_retries: 1
+          min_retry_interval_millis: 120000
+          notification_settings:
+            no_alert_for_skipped_runs: true
+
+        - task_key: TestServerless
+          depends_on:
+            #all tasks that depend on ExistingClusterTask can run in parallel
+            - task_key: ExistingClusterTask
+          notebook_task:
+            notebook_path: ./bundle/notebooks/notebook1
+            source: WORKSPACE
+          #no compute is specified!
+          max_retries: 1
+          min_retry_interval_millis: 120000
+          notification_settings:
+            no_alert_for_skipped_runs: true
+
+        - task_key: TestJobCompute
+          depends_on:
+            - task_key: ExistingClusterTask
+          notebook_task:
+            notebook_path: ./bundle/notebooks/notebook1
+            source: WORKSPACE
+          max_retries: 1
+          min_retry_interval_millis: 120000
+          notification_settings:
+            no_alert_for_skipped_runs: true
+          #this spins up a cluster just for the task
+          # new_cluster:
+          #   num_workers: 1
+          #   spark_version: '14.3.x-scala2.12'
+          #   node_type_id: 'i3.xlarge'            
+
+      #put this here for one cluster for all tasks
+      job_clusters:
+          - job_cluster_key: default_cluster
+            new_cluster:
+              spark_version: 13.3.x-scala2.12
+              node_type_id: i3.xlarge
+              num_workers: 1
+
+
+      queue:
+        enabled: true
+      parameters:
+        - name: email_address
+          default: ${var.email_address}
+        - name: catalog
+          default: ${var.catalog}
+        
+
+
+

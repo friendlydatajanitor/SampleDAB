@@ -1,0 +1,27 @@
+bundle:
+  name: my_bundle_name
+
+include:
+  - resources/testbundle.yml
+
+variables:
+  email_address:
+    description: "Email address for notifications"
+  catalog:
+    description: "Catalog name"
+  storage_account:
+    description: "Storage account name"
+
+targets:
+  dev:
+    workspace:
+      host: https://dbc-e646edb0-d2dd.cloud.databricks.com/
+      root_path: /Workspace/my-bundle
+    mode: production
+    default: true
+    vars:
+      #the values can be passed in via command line/CICD variables also
+      email_address: ${var.email_address}
+      cluster_id: ${var.cluster_id}
+      catalog: ${var.catalog}
+      storage_account: ${var.storage_account}
