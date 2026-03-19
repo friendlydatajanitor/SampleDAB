@@ -1,8 +1,8 @@
 bundle:
   name: my_bundle_name
 
-#include:
-#  - resources/testbundle.yml
+include:
+  - resources/testbundle.yml
 
 variables:
   email_address:
@@ -19,6 +19,7 @@ targets:
       host: https://dbc-e646edb0-d2dd.cloud.databricks.com/
       root_path: /Workspace/my-bundle
     mode: production
+      
     default: true
     variables:
       #the values can be passed in via command line/CICD variables also

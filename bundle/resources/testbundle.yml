@@ -1,9 +1,7 @@
 resources:
   jobs:
     my_bundle_job:  #logical job name
-      name: my bundle job name #text that shows up
-      #run_as: 
-      #  service_principal_name: Mike_sp
+      name: mybundlejobname #text that shows up
       email_notifications:
         on_start:
           - ${var.email_address}
@@ -11,6 +9,14 @@ resources:
           - ${var.email_address}
         on_failure:
           - ${var.email_address}
+      run_as: 
+      service_principal_name: '89cc0479-2fdb-4b64-a0f5-5a1ac02fde8f'
+      permissions:
+        - service_principal_name: '89cc0479-2fdb-4b64-a0f5-5a1ac02fde8f'
+          level: CAN_MANAGE
+        - user_name: mike.wingert@insight.com
+          level: CAN_MANAGE
+          
       notification_settings:
         no_alert_for_skipped_runs: true
         no_alert_for_canceled_runs: true
@@ -31,29 +37,29 @@ resources:
           notification_settings:
             no_alert_for_skipped_runs: true
 
-        - task_key: TestServerless
-          depends_on:
-            #all tasks that depend on ExistingClusterTask can run in parallel
-            - task_key: ExistingClusterTask
-          notebook_task:
-            notebook_path: ../notebooks/notebook1.ipynb
-            source: WORKSPACE
-          #no compute is specified!
-          max_retries: 1
-          min_retry_interval_millis: 120000
-          notification_settings:
-            no_alert_for_skipped_runs: true
-
-        - task_key: TestJobCompute
-          depends_on:
-            - task_key: ExistingClusterTask
-          notebook_task:
-            notebook_path: ../notebooks/notebook1.ipynb
-            source: WORKSPACE
-          max_retries: 1
-          min_retry_interval_millis: 120000
-          notification_settings:
-            no_alert_for_skipped_runs: true
+#        - task_key: TestServerless
+#          depends_on:
+#            #all tasks that depend on ExistingClusterTask can run in parallel
+#            - task_key: ExistingClusterTask
+#          notebook_task:
+#            notebook_path: ../notebooks/notebook1.ipynb
+#            source: WORKSPACE
+#          #no compute is specified!
+#          max_retries: 1
+#          min_retry_interval_millis: 120000
+#          notification_settings:
+#            no_alert_for_skipped_runs: true
+#
+#        - task_key: TestJobCompute
+#          depends_on:
+#            - task_key: ExistingClusterTask
+#          notebook_task:
+#            notebook_path: ../notebooks/notebook1.ipynb
+#            source: WORKSPACE
+#          max_retries: 1
+#          min_retry_interval_millis: 120000
+#          notification_settings:
+#            no_alert_for_skipped_runs: true
           #this spins up a cluster just for the task
           # new_cluster:
           #   num_workers: 1
